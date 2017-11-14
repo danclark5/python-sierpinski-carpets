@@ -40,7 +40,7 @@ class SierpinskiConfig(object):
 
 def print_help():
     """Explain what this is and show the user possible commands so that they can do stuff"""
-    help_msg = """
+    print("""
 A sierpinski's carpet is a design that is derived from string or pattern replacement that is done over a number of
 passes. An initial single value is replaced by a rule from a rule set where each rule defines how each value is
 replaced. The number of rules is dependent on the number of possible values and output of each rule can only include
@@ -50,47 +50,44 @@ This tool generates these carpets, but it also allows the user to set the rules 
 set a rule set and the number of iterations, but if not the default is a classic sierpinski carpet over 3 iterations. 
 It also has a number of utilities as listed below.
 
-    exit     (q)    - Exit the script.
-    generate (g)    - Will generate and print out the textual represent the sierpinski pattern.
+    quit     (q,x)  - Exit the script.
+    generate (g)    - Generate and print out a textual representation of the sierpinski pattern.
     help     (h)    - Display this message.
     print    (p)    - Reprints the last pattern that was generated.
-    quit     (q,x)  - Exit the script.
-    rules    (r)    - Go to the rule set up menu
-    """
-
-    print(help_msg)
+    rules    (r)    - Go to the rule set up menu.
+    image    (i)    - Write the pattern to an image file.
+    """)
 
 def generate(cfg):
     """All this does is take the user's desired configs (or the default) and generate/print the associated sierpinski
     carpet."""
     iterations = input('Number of iterations: ')
     #initialze the output so that it is the first character of the "0" rule
-    print('Generation started...')
     cfg.output = cfg.rules[0][0] + '\n'
-    lcv = 0
-    while lcv < int(iterations)-1:
+    for lcv in range(1, int(iterations)):
+        print('Generation', lcv, 'started...')
         next_output = ''
-        staged_line_1 = ''
-        staged_line_2 = ''
-        staged_line_3 = ''
+        staged_lines = [[], [], []]
         for focus in cfg.output:
             if focus == '\n':
                 #End of line prep for next line
-                next_output = next_output + '\n'.join([staged_line_1, staged_line_2, staged_line_3]) + '\n'
-                staged_line_1 = ''
-                staged_line_2 = ''
-                staged_line_3 = ''
+                next_output += '\n'.join(''.join(s) for s in staged_lines) + '\n'
+                staged_lines = [[], [], []]
             else:
+                focus = int(focus)
                 try:
-                    staged_line_1 = staged_line_1 + cfg.rules[int(focus)][0:3]
-                    staged_line_2 = staged_line_2 + cfg.rules[int(focus)][3:6]
-                    staged_line_3 = staged_line_3 + cfg.rules[int(focus)][6:9]
+                    rule = cfg.rules[focus]
                 except KeyError as e:
                     print('rule set error: Check your rules for {}. It doesn\'t have a rule'.format(e))
+                staged_lines[0].append(rule[0:3])
+                staged_lines[1].append(rule[3:6])
+                staged_lines[2].append(rule[6:9])
         cfg.output = next_output
         cfg.iterations = iterations
-        lcv += 1
-    print_output(cfg)
+    if len(cfg.output) < 10000:
+        print_output(cfg)
+    else:
+        print('Pattern too large to display as text.')
     return cfg
 
 def rules(cfg):
@@ -106,8 +103,8 @@ Options
   x,q - return to the main menu
 """
     print(rules_menu)
-    while 1==1:
-        command = input('>')
+    while True:
+        command = input('> ')
         if command == 'p':
             print_rules(cfg)
             print('\n',rules_menu)
@@ -119,7 +116,7 @@ Options
             print('\n',rules_menu)
         elif command in ('x','q'):
             return cfg
-        elif len(command) == 0:
+        elif not command:
             print('Type a command and then press enter')
         else:
             print('Invalid command', '\n\n', rules_menu)
@@ -147,7 +144,7 @@ def modify_rules(cfg):
             print('Rule must be 9 characters long')
         new_rule = input('{} > '.format(rule))
     if len(new_rule_set) > 0:
-        print('New rule set defined')
+        print('New rule set defined:')
         print(new_rule_set)
         cfg.rules = new_rule_set
     else:
@@ -156,7 +153,7 @@ def modify_rules(cfg):
 
 def print_output(cfg):
     """Convenience function that check if there is output to be printed and prints it."""
-    if len(cfg.output) > 0:
+    if cfg.output:
         print(cfg.output)
     else:
         print('*'*40, 'Warning', '*'*40)
@@ -168,7 +165,7 @@ def chunker(s):
     for i in range(0, len(s), 8):
         yield int(s[i:i+8],2)
 
-def generate_image(cfg):
+def generate_image(cfg, filepath='test.bmp'):
     size = 3 ** (int(cfg.iterations)-1)
     color_count = len(cfg.rules)
 
@@ -181,11 +178,12 @@ def generate_image(cfg):
 
     if color_count > 2:
         stripped_data = cfg.output.translate({ord(c): None for c in '\n'})
-        refined_data = b''.join([colors[n] for n in stripped_data])
+        refined_data = b''.join(colors[n] for n in stripped_data)
         mode = 'RGB'
 
     image = Image.frombytes(mode, (size, size), refined_data)
-    image.save('test.bmp')
+    image.save(filepath)
+    print('Saved image to', filepath)
 
 def main():
     """Main function to drive the user interface"""
@@ -193,8 +191,8 @@ def main():
     print('*'*80)
     print('Sierpinski''s Carpet Generator')
     print('*'*80)
-    while 1==1:
-        command = input('>')
+    while True:
+        command = input('> ')
         if command in ('h', 'help'):
             print_help()
         elif command in ('q', 'x', 'quit', 'exit'):
