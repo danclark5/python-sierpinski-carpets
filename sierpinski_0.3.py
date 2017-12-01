@@ -5,6 +5,7 @@ from PIL import Image
 # Version: 0.3
 # Date: 2017-10-25
 # By: D. Clark
+# Credit: CJ Carey for his input and assistance
 # Description:
 # --------------------------------------
 # Simplistic utility to generate Sierpinski carpets. It's a command line driven
@@ -40,7 +41,7 @@ class SierpinskiConfig(object):
 
 def print_help():
     """Explain what this is and show the user possible commands so that they can do stuff"""
-    help_msg = """
+    print("""
 A sierpinski's carpet is a design that is derived from string or pattern replacement that is done over a number of
 passes. An initial single value is replaced by a rule from a rule set where each rule defines how each value is
 replaced. The number of rules is dependent on the number of possible values and output of each rule can only include
@@ -50,15 +51,13 @@ This tool generates these carpets, but it also allows the user to set the rules 
 set a rule set and the number of iterations, but if not the default is a classic sierpinski carpet over 3 iterations. 
 It also has a number of utilities as listed below.
 
-    exit     (q)    - Exit the script.
-    generate (g)    - Will generate and print out the textual represent the sierpinski pattern.
+    quit     (q,x)  - Exit the script.
+    generate (g)    - Generate and print out a textual representation of the sierpinski pattern.
     help     (h)    - Display this message.
     print    (p)    - Reprints the last pattern that was generated.
-    quit     (q,x)  - Exit the script.
-    rules    (r)    - Go to the rule set up menu
+    rules    (r)    - Go to the rule set up menu.
+    image    (i)    - Write the pattern to an image file. 
     """
-
-    print(help_msg)
 
 def generate(cfg):
     """All this does is take the user's desired configs (or the default) and generate/print the associated sierpinski
@@ -107,7 +106,7 @@ Options
 """
     print(rules_menu)
     while 1==1:
-        command = input('>')
+        command = input('> ')
         if command == 'p':
             print_rules(cfg)
             print('\n',rules_menu)
@@ -147,7 +146,7 @@ def modify_rules(cfg):
             print('Rule must be 9 characters long')
         new_rule = input('{} > '.format(rule))
     if len(new_rule_set) > 0:
-        print('New rule set defined')
+        print('New rule set defined:')
         print(new_rule_set)
         cfg.rules = new_rule_set
     else:

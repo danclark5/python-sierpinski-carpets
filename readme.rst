@@ -17,13 +17,18 @@ Pillow==4.3.0
 
 Assuming you have python you'll need to do the following. If you don't have python installed there are plenty of
 resources, or you can send me a message on twitter. 
-* Create a virtualenv. This can be done via python -m venv nameofyourvirtualenv
+* Create a virtualenv. This can be done with `python -m venv nameofyourvirtualenv`
 * Create an environment variable to get to bin or scripts directory in the virtualenv
-* Upgrade pip in said virtualenv
+* Upgrade pip in said virtualenv with `$ve\pip install --upgrade pip`
+* Install requirements with `$ve\pip install -r requirements.txt`
 
 **Resume reading if you are skipping**
 
-To run the scripts you simply invoke it with the python executable in your ve. No parameters needed. Just watch out when
+To run the scripts you simply invoke them with the python executable in your ve. No parameters needed. Just watch out when
 you create a bmp. The script is still simplistic in that it just writes to the same file, so your **new images will
 overwrite your old ones**.
+
+An example command is `$ve\python sierpinski_0.3.py` 
+
+
 
