@@ -57,7 +57,7 @@ It also has a number of utilities as listed below.
     print    (p)    - Reprints the last pattern that was generated.
     rules    (r)    - Go to the rule set up menu.
     image    (i)    - Write the pattern to an image file. 
-    """
+    """)
 
 def generate(cfg):
     """All this does is take the user's desired configs (or the default) and generate/print the associated sierpinski
