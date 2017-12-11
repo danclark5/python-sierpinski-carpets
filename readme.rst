@@ -16,7 +16,7 @@ packages:
 
 **Skip the following if you understand virtualenvs**
 
-Assuming you have python you'll need to do the following. If you don't have python installed there are plenty of
+Assuming you have python 3 (I am on 3.5 at the moment) you'll need to do the following. If you don't have python installed there are plenty of
 resources, or you can send me a message on twitter. 
 
 1. Create a virtualenv. This can be done with ``python -m venv nameofyourvirtualenv``
