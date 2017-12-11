@@ -92,6 +92,17 @@ def generate(cfg):
     print_output(cfg)
     return cfg
 
+def show(cfg):
+    # all in one place for author's convenience, [except for the dispatch in main] but really:
+    # this belongs in readme/install
+    #   assumes [for linux] apt install python3-tk; apt install matplotlib
+    # and this belongs at the top of the file
+    import matplotlib.pyplot as plt
+    # prevents the plot window from getting the screen focus [except when first displayed]
+    plt.ion()
+    img = [[int(char) for char in line] for line in cfg.output.strip().split('\n')]
+    imgplot = plt.imshow(img)
+
 def rules(cfg):
     """front end function that guides rule set up."""
     rules_menu = """
@@ -170,17 +181,20 @@ def chunker(s):
 def generate_image(cfg):
     size = 3 ** (int(cfg.iterations)-1)
     color_count = len(cfg.rules)
+    print(0,cfg.output)
 
     #For two rules we need to padd and chunk
     if color_count == 2:
         padding = '0'*(8-size%8)
         stripped_data = cfg.output.translate({ord(c): padding for c in '\n'})
         refined_data = bytes(list(chunker(stripped_data)))
+        print(2,refined_data)
         mode = '1'
 
     if color_count > 2:
         stripped_data = cfg.output.translate({ord(c): None for c in '\n'})
         refined_data = b''.join([colors[n] for n in stripped_data])
+        print(3,refined_data)
         mode = 'RGB'
 
     image = Image.frombytes(mode, (size, size), refined_data)
@@ -200,6 +214,8 @@ def main():
             return 0
         elif command in ('g', 'generate'):
             cfg = generate(cfg)
+        elif command in ('s', 'show'):
+            show(cfg)
         elif command in ('r', 'rules'):
             cfg = rules(cfg)
         elif command in ('p', 'print'):
