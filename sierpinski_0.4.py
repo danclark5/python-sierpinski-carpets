@@ -1,11 +1,12 @@
 import attr
 from PIL import Image
+import random
 #-------------------------------------------------------------------------------
 # Sierpinski's carpet
-# Version: 0.3
+# Version: 0.4
 # Date: 2017-10-25
 # By: D. Clark
-# Credit: CJ Carey for his input and assistance
+# Thanks: CJ Carey and Princeton Python User Group
 # Description:
 # --------------------------------------
 # Simplistic utility to generate Sierpinski carpets. It's a command line driven
@@ -17,6 +18,8 @@ from PIL import Image
 # * Testing
 # * Logging
 # * Investigate usage of matrices 
+# * Use the cmd module to handle user prompt 
+# * Change the Sierpinkskiconfig class to a full fledge class with all the helper methods.
 #-------------------------------------------------------------------------------
 # Some sane defaults. Need a better place for this Using globals for now.
 default_rules = {
@@ -28,6 +31,11 @@ colors = {'0': b'\xf3\x86\x30',
           '2': b'\xe0\xe4\xcc',
           '3': b'\xa7\xdb\xd8',
           '4': b'\xfa\x69\x00',
+          '5': b'\x09\x51\xff',
+          '6': b'\x0f\x54\x00',
+          '7': b'\xaa\x11\x05',
+          '8': b'\xff\xff\xff',
+          '9': b'\x00\x60\x00',
         }
 rules = None
 
@@ -100,7 +108,8 @@ Rules Setup
 ********************************************************************************
 Options
   p   - print rules
-  r   - reset defaults
+  d   - reset defaults
+  r   - generate random rules 
   m   - modify rules
   x,q - return to the main menu
 """
@@ -110,9 +119,12 @@ Options
         if command == 'p':
             print_rules(cfg)
             print('\n',rules_menu)
-        elif command == 'r':
+        elif command == 'd':
             cfg = reset_rules(cfg)
             print('\n',rules_menu)
+        elif command == 'r':
+            num_of_rules = random.randint(2,9)
+            cfg = random_rules(cfg, num_of_rules)
         elif command == 'm':
             cfg = modify_rules(cfg)
             print('\n',rules_menu)
@@ -122,6 +134,19 @@ Options
             print('Type a command and then press enter')
         else:
             print('Invalid command', '\n\n', rules_menu)
+
+def random_rules(cfg, num_of_rules):
+    new_rule_set = {}
+    for rule in range(num_of_rules):
+        new_rule_set[rule] = rule_gen(num_of_rules)
+    cfg.rules = new_rule_set
+    print('New rule set defined:')
+    print(new_rule_set)
+    return cfg
+        
+def rule_gen(num_of_rules):
+    return ''.join(str(random.randint(0,num_of_rules -1)) for __ in range(9))
+
 
 def print_rules(cfg):
     print('Current rules')
